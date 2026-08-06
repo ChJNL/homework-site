@@ -1,0 +1,421 @@
+/* =========================================================
+   중1 B반 숙제 — Design Tokens
+   ========================================================= */
+:root {
+  --color-bg: #F5F6F8;
+  --color-surface: #FFFFFF;
+  --color-border: #E4E7EC;
+  --color-border-strong: #C9CEDA;
+
+  --color-text: #262B36;
+  --color-text-secondary: #6B7280;
+  --color-text-tertiary: #9AA1AE;
+
+  --color-primary: #3E5C76;
+  --color-primary-hover: #32485E;
+  --color-primary-soft: #E8EEF4;
+
+  --color-tag-reading-bg: #E3F1EA;
+  --color-tag-reading-text: #3E7A5C;
+  --color-tag-grammar-bg: #ECE7F7;
+  --color-tag-grammar-text: #6B54A3;
+
+  --shadow-card: 0 1px 2px rgba(20, 24, 32, 0.05), 0 4px 14px rgba(20, 24, 32, 0.05);
+  --shadow-card-lg: 0 8px 28px rgba(20, 24, 32, 0.10), 0 2px 8px rgba(20, 24, 32, 0.06);
+}
+
+/* =========================================================
+   Reset
+   ========================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+html, body, h1, h2, p, dl, dd, dt, ul, li, form, fieldset { margin: 0; padding: 0; }
+ul { list-style: none; }
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+input, textarea, select { font: inherit; color: inherit; }
+img { max-width: 100%; display: block; }
+
+body {
+  font-family: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+/* =========================================================
+   App shell — 모바일: 전체화면 / PC: 카드형으로 중앙 배치
+   ========================================================= */
+#app {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  body { padding: 40px 20px; }
+  #app {
+    min-height: min(760px, calc(100vh - 80px));
+    border-radius: 24px;
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-card-lg);
+    overflow: hidden;
+  }
+}
+
+/* =========================================================
+   View 전환 (SPA)
+   ========================================================= */
+.view {
+  display: none;
+  flex-direction: column;
+  flex: 1;
+}
+.view--active {
+  display: flex;
+  animation: view-in 0.28s ease;
+}
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .view--active { animation: none; }
+  * { transition: none !important; }
+}
+
+/* =========================================================
+   Top bar (메인 화면)
+   ========================================================= */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid var(--color-border);
+}
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.brand-badge {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: 700;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.topbar__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-bottom: 2px;
+}
+.topbar__title {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+.btn-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 22px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+.btn-icon:hover { background: var(--color-primary); color: #fff; }
+.btn-icon:active { transform: scale(0.94); }
+.btn-icon:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* =========================================================
+   숙제 목록
+   ========================================================= */
+.hw-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px 16px 32px;
+  flex: 1;
+}
+.hw-card {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  padding: 0;
+  text-align: left;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+.hw-card:hover { border-color: var(--color-border-strong); box-shadow: var(--shadow-card); }
+.hw-card:active { transform: scale(0.99); }
+.hw-card:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+.hw-card__accent {
+  width: 4px;
+  flex-shrink: 0;
+  background: var(--color-primary);
+}
+.hw-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 4px 16px 0;
+}
+.hw-card__title {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--color-text);
+}
+.hw-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.hw-card__amount {
+  font-size: 12.5px;
+  color: var(--color-text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 180px;
+}
+.hw-card__chevron {
+  flex-shrink: 0;
+  align-self: center;
+  color: var(--color-text-tertiary);
+  font-size: 18px;
+  padding-right: 16px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.tag--reading { background: var(--color-tag-reading-bg); color: var(--color-tag-reading-text); }
+.tag--grammar { background: var(--color-tag-grammar-bg); color: var(--color-tag-grammar-text); }
+
+/* 상태 안내 (로딩 / 빈 목록 / 오류 / 설정 필요) */
+.list-status {
+  margin: 40px 24px;
+  padding: 32px 20px;
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 16px;
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+.list-status strong {
+  display: block;
+  color: var(--color-text);
+  font-size: 14.5px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.list-status code {
+  background: var(--color-bg);
+  padding: 1px 6px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+/* =========================================================
+   서브 바 (뒤로가기 / 취소)
+   ========================================================= */
+.subbar { padding: 20px 20px 4px; }
+.btn-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  padding: 8px 4px;
+  border-radius: 6px;
+  transition: color 0.15s ease;
+}
+.btn-text:hover { color: var(--color-primary); }
+.btn-text:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+
+/* =========================================================
+   상세 화면
+   ========================================================= */
+.detail { padding: 12px 24px 40px; flex: 1; }
+.detail__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+.detail__title {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1.35;
+  margin-bottom: 24px;
+}
+.detail__list {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--color-border);
+}
+.detail__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+.detail__row dt { font-size: 13.5px; color: var(--color-text-secondary); font-weight: 500; }
+.detail__row dd { font-size: 14.5px; color: var(--color-text); font-weight: 700; }
+
+.detail__desc-block {
+  margin-top: 28px;
+  background: var(--color-bg);
+  border-radius: 16px;
+  padding: 20px;
+}
+.detail__desc-label {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  margin-bottom: 10px;
+}
+.detail__desc {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--color-text);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* =========================================================
+   선생님 인증 화면
+   ========================================================= */
+.auth {
+  padding: 28px 24px 40px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.auth__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.auth__title {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
+/* =========================================================
+   폼 공통 요소
+   ========================================================= */
+.input {
+  width: 100%;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-size: 14.5px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.input::placeholder { color: var(--color-text-tertiary); }
+.input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-soft);
+}
+.textarea { resize: vertical; min-height: 110px; line-height: 1.6; }
+
+.btn-primary {
+  margin-top: 8px;
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--color-primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary:active { transform: scale(0.98); }
+.btn-primary:focus-visible { outline: 2px solid var(--color-text); outline-offset: 2px; }
+.btn-primary:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+/* =========================================================
+   숙제 공지 작성 화면
+   ========================================================= */
+.write {
+  padding: 16px 24px 48px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.write__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.field label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text);
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>중1 B반 숙제</title>
+<meta name="description" content="중1 B반 영어 숙제 실시간 공지 게시판" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ======================= 1. 메인 화면 ======================= -->
+  <section id="view-main" class="view view--active" aria-label="숙제 목록">
+    <header class="topbar">
+      <div class="topbar__brand">
+        <span class="brand-badge" aria-hidden="true">B</span>
+        <div>
+          <p class="topbar__eyebrow">English Homework</p>
+          <h1 class="topbar__title">중1 B반 숙제</h1>
+        </div>
+      </div>
+      <button id="btn-add" class="btn-icon" type="button" aria-label="숙제 등록하기" title="숙제 등록">+</button>
+    </header>
+
+    <div id="list-status" class="list-status" hidden></div>
+    <ul id="homework-list" class="hw-list"></ul>
+  </section>
+
+  <!-- ======================= 2. 자세한 숙제 확인 화면 ======================= -->
+  <section id="view-detail" class="view" aria-label="숙제 상세">
+    <header class="subbar">
+      <button id="btn-back" class="btn-text" type="button">← 뒤로가기</button>
+    </header>
+    <div class="detail">
+      <p class="detail__eyebrow">숙제 안내</p>
+      <h2 id="detail-title" class="detail__title"></h2>
+
+      <dl class="detail__list">
+        <div class="detail__row">
+          <dt>영어 숙제 유형</dt>
+          <dd id="detail-type"></dd>
+        </div>
+        <div class="detail__row">
+          <dt>분량</dt>
+          <dd id="detail-amount"></dd>
+        </div>
+      </dl>
+
+      <div class="detail__desc-block">
+        <p class="detail__desc-label">선생님 설명</p>
+        <p id="detail-desc" class="detail__desc"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 3. 선생님 인증 화면 ======================= -->
+  <section id="view-auth" class="view" aria-label="선생님 인증">
+    <header class="subbar">
+      <button id="btn-auth-cancel" class="btn-text" type="button">취소</button>
+    </header>
+    <form id="form-auth" class="auth">
+      <p class="auth__eyebrow">선생님 인증</p>
+      <h2 class="auth__title">인증 코드를 입력해 주세요</h2>
+      <input
+        id="auth-code"
+        class="input"
+        type="password"
+        placeholder="인증 코드"
+        autocomplete="off"
+        required
+      />
+      <button id="btn-auth-confirm" class="btn-primary" type="submit">확인</button>
+    </form>
+  </section>
+
+  <!-- ======================= 4. 숙제 공지 작성 화면 ======================= -->
+  <section id="view-write" class="view" aria-label="숙제 공지 작성">
+    <header class="subbar">
+      <button id="btn-write-cancel" class="btn-text" type="button">취소</button>
+    </header>
+    <form id="form-write" class="write">
+      <p class="write__eyebrow">숙제 공지 작성</p>
+
+      <div class="field">
+        <label for="input-date">날짜</label>
+        <input id="input-date" class="input" type="text" placeholder="예) 11월 28일" required />
+      </div>
+
+      <div class="field">
+        <label for="input-type">영어 숙제 유형</label>
+        <select id="input-type" class="input" required>
+          <option value="" disabled selected>숙제 유형을 선택하세요</option>
+          <option value="독해">독해</option>
+          <option value="문법">문법</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="input-amount">분량</label>
+        <input id="input-amount" class="input" type="text" placeholder="숙제의 페이지나 구간을 입력해 주세요" required />
+      </div>
+
+      <div class="field">
+        <label for="input-desc">선생님 설명</label>
+        <textarea id="input-desc" class="input textarea" rows="4" placeholder="더 하실 말씀 있나요?"></textarea>
+      </div>
+
+      <button id="btn-submit" class="btn-primary" type="submit">생성</button>
+    </form>
+  </section>
+
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
