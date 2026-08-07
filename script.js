@@ -69,6 +69,7 @@ const listStatusEl = document.getElementById("list-status");
 const listEl = document.getElementById("homework-list");
 
 const btnAdd = document.getElementById("btn-add");
+const btnNotify = document.getElementById("btn-notify");
 const btnBack = document.getElementById("btn-back");
 const btnAuthCancel = document.getElementById("btn-auth-cancel");
 const btnWriteCancel = document.getElementById("btn-write-cancel");
@@ -92,6 +93,7 @@ const detailDescEl = document.getElementById("detail-desc");
    상태
    ============================================================= */
 let homeworkCache = [];
+let isInitialLoad = true; // 최초 스냅샷(기존 데이터 로딩)인지 구분하는 플래그
 
 /* =============================================================
    화면 전환
@@ -160,6 +162,73 @@ function escapeHtml(str) {
 }
 
 /* =============================================================
+   브라우저 알림 (Web Notification)
+   ============================================================= */
+
+// 이 브라우저가 Notification API를 지원하는지 확인
+function isNotificationSupported() {
+  return "Notification" in window;
+}
+
+// '알림 받기' 버튼의 라벨/활성화 상태를 현재 권한 상태에 맞게 갱신
+function updateNotifyButtonUI() {
+  if (!btnNotify) return;
+
+  if (!isNotificationSupported()) {
+    btnNotify.textContent = "🔕 이 브라우저는 알림을 지원하지 않아요";
+    btnNotify.disabled = true;
+    return;
+  }
+
+  if (Notification.permission === "granted") {
+    btnNotify.textContent = "🔔 알림이 켜져 있어요";
+    btnNotify.disabled = true;
+  } else if (Notification.permission === "denied") {
+    btnNotify.textContent = "🔕 알림이 차단되어 있어요 (브라우저 설정에서 해제해주세요)";
+    btnNotify.disabled = true;
+  } else {
+    btnNotify.textContent = "🔔 알림 받기";
+    btnNotify.disabled = false;
+  }
+}
+
+// 버튼 클릭 시 브라우저 알림 권한을 요청
+function requestNotificationPermission() {
+  if (!isNotificationSupported()) {
+    alert("이 브라우저는 알림 기능을 지원하지 않습니다.");
+    return;
+  }
+
+  Notification.requestPermission().then((permission) => {
+    updateNotifyButtonUI();
+    if (permission === "granted") {
+      new Notification("알림이 켜졌습니다", {
+        body: "새 숙제가 등록되면 알려드릴게요.",
+      });
+    } else if (permission === "denied") {
+      alert("알림이 차단되었습니다. 다시 받으시려면 브라우저 사이트 설정에서 알림 권한을 허용해주세요.");
+    }
+  });
+}
+
+// 새 숙제 1건에 대한 브라우저 알림 발송
+function notifyNewHomework(hw) {
+  if (!isNotificationSupported() || Notification.permission !== "granted") return;
+
+  const notification = new Notification(`새 숙제: ${hw.title}`, {
+    body: `${hw.type ? `[${hw.type}] ` : ""}분량: ${hw.amount || "-"}`,
+    tag: hw.id, // 같은 숙제로 알림이 중복 생성되는 것을 방지
+  });
+
+  notification.onclick = () => {
+    window.focus();
+    fillDetail(hw);
+    showView("detail");
+    notification.close();
+  };
+}
+
+/* =============================================================
    Firestore 실시간 구독 (최신순 정렬, 최대 10개)
    ============================================================= */
 function subscribeToHomeworks() {
@@ -187,6 +256,21 @@ function subscribeToHomeworks() {
         ...docSnap.data(),
       }));
       renderList();
+
+      // ⚠️ 매우 중요: 페이지를 처음 열었을 때 이미 저장돼 있던 숙제들까지
+      // '추가(added)'로 인식되어 알림이 한꺼번에 뜨는 것을 막기 위한 처리.
+      // 첫 스냅샷(isInitialLoad === true)에서는 알림을 절대 보내지 않고,
+      // 그 이후에 실제로 새로 추가된 문서에 대해서만 알림을 보낸다.
+      if (isInitialLoad) {
+        isInitialLoad = false;
+      } else {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            const hw = { id: change.doc.id, ...change.doc.data() };
+            notifyNewHomework(hw);
+          }
+        });
+      }
     },
     (error) => {
       console.error("[숙제 공지 앱] 목록을 불러오지 못했습니다:", error);
@@ -256,6 +340,11 @@ function resetWriteForm() {
 /* =============================================================
    이벤트 바인딩
    ============================================================= */
+
+// 알림 받기 버튼 클릭 -> 브라우저 알림 권한 요청
+if (btnNotify) {
+  btnNotify.addEventListener("click", requestNotificationPermission);
+}
 
 // 메인 -> 인증 화면
 btnAdd.addEventListener("click", () => {
@@ -335,4 +424,5 @@ btnBack.addEventListener("click", () => {
 /* =============================================================
    시작
    ============================================================= */
+updateNotifyButtonUI();
 subscribeToHomeworks();
