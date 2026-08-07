@@ -156,6 +156,27 @@ body {
 .btn-icon:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
 
 /* =========================================================
+   알림 받기 바
+   ========================================================= */
+.notify-bar {
+  padding: 14px 16px 0;
+}
+.btn-notify {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  background: var(--color-primary-soft);
+  color: var(--color-primary);
+  font-size: 13.5px;
+  font-weight: 700;
+  text-align: center;
+  transition: background 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+}
+.btn-notify:hover { background: var(--color-primary); color: #fff; }
+.btn-notify:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.btn-notify:disabled { opacity: 0.6; cursor: default; }
+
+/* =========================================================
    숙제 목록
    ========================================================= */
 .hw-list {
