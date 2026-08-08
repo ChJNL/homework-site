@@ -2,13 +2,13 @@
    🔥 Firebase 설정 (인증 키 연동 완료)
    ============================================================= */
 const firebaseConfig = {
-  apiKey: "AIzaSyBxUVKRY_zHpCK1ht3wvwXwSKYQ-iAe-JA",
-  authDomain: "homework-app-cd7bf.firebaseapp.com",
-  projectId: "homework-app-cd7bf",
-  storageBucket: "homework-app-cd7bf.firebasestorage.app",
-  messagingSenderId: "506437711028",
-  appId: "1:50643771028:web:c9c19c585f11535dc853e1",
-  measurementId: "G-VSL3P66CW0"
+  apiKey: process.env.FIREBASE_API_KEY,
+  authDomain: process.env.FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.FIREBASE_APP_ID,
+  measurementId: process.env.FIREBASE_MEASUREMENT_ID
 };
 
 /* =============================================================
